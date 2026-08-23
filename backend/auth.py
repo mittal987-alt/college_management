@@ -17,12 +17,15 @@ Environment variables required (same .env as before, plus):
 """
 
 import os
+import logging
 from datetime import datetime, timedelta, timezone
 
 from authlib.integrations.starlette_client import OAuth
 from fastapi import APIRouter, Cookie, Depends, HTTPException, Request, Response
 from jose import JWTError, jwt
 from starlette.responses import RedirectResponse
+
+logger = logging.getLogger(__name__)
 
 router = APIRouter(prefix="/api/auth", tags=["auth"])
 
@@ -79,7 +82,7 @@ def get_admin_user(user: dict = Depends(get_current_user)) -> dict:
 async def login(request: Request):
     """Redirect the browser to Google's OAuth consent screen."""
     redirect_uri = os.environ.get("GOOGLE_REDIRECT_URI") or (str(request.base_url) + "api/auth/callback")
-    print(f"DEBUG: Redirecting with URI = {redirect_uri}")
+    logger.info(f"Redirecting with URI = {redirect_uri}")
     return await oauth.google.authorize_redirect(request, redirect_uri)
 
 
@@ -88,8 +91,9 @@ async def auth_callback(request: Request, response: Response):
     """Exchange the OAuth code for user info, mint a JWT, and redirect to frontend."""
     try:
         token = await oauth.google.authorize_access_token(request)
-    except Exception:
-        raise HTTPException(status_code=400, detail="OAuth callback failed")
+    except Exception as e:
+        logger.exception("OAuth callback failed")  # full traceback goes to Render logs
+        raise HTTPException(status_code=400, detail=f"OAuth callback failed: {str(e)}")
 
     user_info = token.get("userinfo") or {}
     email = (user_info.get("email") or "").lower()
