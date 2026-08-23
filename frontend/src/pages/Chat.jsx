@@ -151,13 +151,10 @@ export default function Chat({ user }) {
   return (
     <div className="main">
       {/* Clean App Header */}
-      <div style={{
-        padding: "1rem 2rem", borderBottom: "1px solid var(--border)", background: "var(--bg)",
-        display: "flex", alignItems: "center", justifyContent: "space-between", flexShrink: 0
-      }}>
+      <div className="chat-header">
         <h2 style={{ fontSize: "1.25rem", margin: 0, fontWeight: 700, color: "var(--text)" }}>CollegeBot</h2>
         
-        <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+        <div className="chat-header-actions">
           {/* History Dropdown */}
           <select 
             className="select" 

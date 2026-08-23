@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import {
   MessageSquare, CalendarDays, BarChart2, Calculator,
   FileText, Bell, Table2, Users, Upload, CalendarClock,
-  CalendarPlus, LayoutDashboard, LogOut
+  CalendarPlus, LayoutDashboard, LogOut, X
 } from "lucide-react";
 import { logout } from "../api";
 
@@ -25,19 +25,29 @@ const adminNav = [
   { to: "/admin/dashboard",          label: "Admin Dashboard",    Icon: LayoutDashboard },
 ];
 
-export default function Sidebar({ user, onLogout }) {
+export default function Sidebar({ user, onLogout, isOpen, onClose }) {
   async function handleLogout() {
     await logout();
     onLogout();
   }
 
   return (
-    <nav className="sidebar">
+    <nav className={`sidebar${isOpen ? " open" : ""}`}>
       <div className="sidebar-logo">
         <div style={{ background: "var(--primary)", color: "var(--bg)", width: 32, height: 32, borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>
           <MessageSquare size={18} fill="currentColor" />
         </div>
-        <span style={{ fontSize: "1rem", fontWeight: 700, letterSpacing: "-0.5px", color: "var(--text)" }}>CollegeBot</span>
+        <span style={{ fontSize: "1rem", fontWeight: 700, letterSpacing: "-0.5px", color: "var(--text)", flex: 1 }}>CollegeBot</span>
+        
+        {/* Mobile Close Button */}
+        <button 
+          className="btn-icon mobile-close-btn" 
+          onClick={onClose} 
+          style={{ display: "none" }}
+          title="Close Menu"
+        >
+          <X size={20} />
+        </button>
       </div>
 
       <div className="sidebar-section">Student Portal</div>
@@ -46,6 +56,7 @@ export default function Sidebar({ user, onLogout }) {
           <NavLink
             key={to} to={to}
             className={({ isActive }) => `sidebar-item${isActive ? " active" : ""}`}
+            onClick={onClose}
           >
             <Icon size={18} style={{ flexShrink: 0 }} /> 
             <span style={{ flex: 1 }}>{label}</span>
@@ -61,6 +72,7 @@ export default function Sidebar({ user, onLogout }) {
               <NavLink
                 key={to} to={to}
                 className={({ isActive }) => `sidebar-item${isActive ? " active" : ""}`}
+                onClick={onClose}
               >
                 <Icon size={18} style={{ flexShrink: 0 }} /> 
                 <span style={{ flex: 1 }}>{label}</span>

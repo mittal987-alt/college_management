@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { getMe } from "./api";
+import { Menu } from "lucide-react";
 
 // Components
 import Sidebar from "./components/Sidebar";
@@ -25,6 +26,7 @@ import UploadCalendar from "./pages/Admin/UploadCalendar";
 export default function App() {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
     getMe()
@@ -48,8 +50,17 @@ export default function App() {
   return (
     <BrowserRouter>
       <div className="app-shell">
-        <Sidebar user={user} onLogout={() => setUser(null)} />
+        <Sidebar user={user} onLogout={() => setUser(null)} isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+        {sidebarOpen && (
+          <div className="sidebar-overlay" onClick={() => setSidebarOpen(false)} />
+        )}
         <main className="main">
+          <div className="mobile-header">
+            <button className="menu-toggle-btn" onClick={() => setSidebarOpen(true)}>
+              <Menu size={20} />
+            </button>
+            <span className="mobile-logo-text">CollegeBot</span>
+          </div>
           <Routes>
             <Route path="/" element={<Navigate to="/chat" replace />} />
             <Route path="/chat" element={<Chat user={user} />} />

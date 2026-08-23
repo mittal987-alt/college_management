@@ -82,18 +82,18 @@ export default function CgpaCalculator() {
       {sems.map((sem, si) => (
         <div key={si} className="card mb-2">
           <h3 style={{ fontWeight: 700, marginBottom: "0.75rem" }}>Semester {si + 1}</h3>
-          <div style={{ display: "grid", gridTemplateColumns: "1fr auto auto", gap: "0.5rem", alignItems: "center", marginBottom: "0.4rem" }}>
+          <div className="cgpa-row-header">
             <span className="label mb-0">Subject</span>
             <span className="label mb-0" style={{ textAlign: "center" }}>Credits</span>
-            <span className="label mb-0" style={{ textAlign: "center", width: 140 }}>Grade</span>
+            <span className="label mb-0" style={{ textAlign: "center" }}>Grade</span>
           </div>
           {sem.map((sub, sj) => (
-            <div key={sj} style={{ display: "grid", gridTemplateColumns: "1fr auto auto", gap: "0.5rem", alignItems: "center", marginBottom: "0.4rem" }}>
+            <div key={sj} className="cgpa-row">
               <input className="input" value={sub.name} placeholder={`Subject ${sj + 1}`}
                 onChange={e => updateField(si, sj, "name", e.target.value)} />
-              <input type="number" className="input" style={{ width: 70 }} min={1} max={6} value={sub.credits}
+              <input type="number" className="input" min={1} max={6} value={sub.credits}
                 onChange={e => updateField(si, sj, "credits", e.target.value)} />
-              <select className="select" style={{ width: 150 }} value={sub.grade}
+              <select className="select" value={sub.grade}
                 onChange={e => updateField(si, sj, "grade", e.target.value)}>
                 {GRADE_OPTIONS.map(g => <option key={g}>{g}</option>)}
               </select>
