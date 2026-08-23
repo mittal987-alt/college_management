@@ -1,16 +1,28 @@
 version: '3.8'
 
 services:
-  college-assistant:
-    build: .
+  backend:
+    build:
+      context: ./backend
+    container_name: college_backend
     ports:
-      - "8501:8501"
-
+      - "8000:8000"
     volumes:
       - ./data:/app/data
-      - ./.streamlit/secrets.toml:/app/.streamlit/secrets.toml:ro
-
-    env_file:
-      - .env
-
+      - ./.env:/app/.env:ro
+      - ./academics_handbook.pdf:/app/academics_handbook.pdf:ro
+      - ./fee_structure.pdf:/app/fee_structure.pdf:ro
     restart: unless-stopped
+    environment:
+      - PYTHONUNBUFFERED=1
+      - FRONTEND_URL=http://localhost:3000
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: college_frontend
+    ports:
+      - "3000:80"
+    restart: unless-stopped
+    depends_on:
+      - backend
