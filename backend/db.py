@@ -38,6 +38,15 @@ def init_db():
     cur = conn.cursor()
 
     cur.execute("""
+        CREATE TABLE IF NOT EXISTS users (
+            email          TEXT PRIMARY KEY,
+            password_hash  TEXT,
+            name           TEXT,
+            is_admin       INTEGER NOT NULL DEFAULT 0
+        )
+    """)
+
+    cur.execute("""
         CREATE TABLE IF NOT EXISTS students (
             roll_no    TEXT PRIMARY KEY,
             email      TEXT UNIQUE,
@@ -89,6 +98,35 @@ def init_db():
 
     conn.commit()
     conn.close()
+
+
+def create_user(email: str, password_hash: str, name: str = "", is_admin: bool = False):
+    """Create a local email/password user in the auth database."""
+    conn = get_connection()
+    conn.execute(
+        """
+        INSERT INTO users (email, password_hash, name, is_admin)
+        VALUES (?, ?, ?, ?)
+        ON CONFLICT(email) DO UPDATE SET
+            password_hash = excluded.password_hash,
+            name = excluded.name,
+            is_admin = excluded.is_admin
+        """,
+        (email.strip().lower(), password_hash, name.strip(), 1 if is_admin else 0),
+    )
+    conn.commit()
+    conn.close()
+
+
+def get_user_by_email(email: str):
+    """Return a user row keyed by email, or None if the user does not exist."""
+    conn = get_connection()
+    row = conn.execute(
+        "SELECT email, password_hash, name, is_admin FROM users WHERE email = ?",
+        (email.strip().lower(),),
+    ).fetchone()
+    conn.close()
+    return dict(row) if row else None
 
 
 # ============================================================

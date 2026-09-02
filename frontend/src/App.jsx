@@ -44,7 +44,7 @@ export default function App() {
   }
 
   if (!user) {
-    return <Login />;
+    return <Login onAuthenticated={(nextUser) => setUser(nextUser)} />;
   }
 
   return (

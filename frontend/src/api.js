@@ -19,6 +19,10 @@ async function api(path, options = {}) {
 export const getMe = () => api("/api/auth/me");
 export const logout = () => api("/api/auth/logout", { method: "POST" });
 export const loginUrl = () => `${BASE}/api/auth/login`;
+export const loginWithEmail = (payload) =>
+  api("/api/auth/login", { method: "POST", body: JSON.stringify(payload) });
+export const signupWithEmail = (payload) =>
+  api("/api/auth/signup", { method: "POST", body: JSON.stringify(payload) });
 
 // Student data
 export const getAttendance = () => api("/api/student/attendance");
