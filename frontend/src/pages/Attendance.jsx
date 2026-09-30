@@ -12,6 +12,8 @@ export default function Attendance() {
 
   async function load() {
     setLoading(true);
+
+    
     try { setData(await getAttendance()); } catch {}
     setLoading(false);
   }
